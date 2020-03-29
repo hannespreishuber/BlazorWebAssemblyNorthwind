@@ -1,0 +1,40 @@
+﻿syntax = "proto3";
+option csharp_namespace = "GrpcService1";
+package northwind; //??
+
+
+
+message Customer {
+    string CustomerId = 1 ;
+    string CompanyName = 2 ;
+    string ContactName = 3;
+    string ContactTitle = 4;
+    string Address = 5;
+    string City = 6 ;
+    string Region = 7 ;
+    string PostalCode = 8;
+    string Country = 9 ;
+    string Phone = 10 ;
+    string Fax = 11 ;
+  
+}
+message CustomerFilter {
+    string id = 1 ;
+    }
+
+message Customers{
+   repeated Customer items = 1;
+}
+message Empty {
+
+}
+
+service NorthwindDB {
+  rpc SelectAll (Empty) returns (Customers);
+  rpc SelectID (CustomerFilter) returns (Customer);
+  rpc Insert (Customer) returns (Empty);
+  rpc Update (Customer) returns (Empty);
+  rpc Delete (Customer) returns (Empty);
+}
+
+//http://www.binaryintellect.net/articles/df0b00f2-e36d-4bd2-a0e6-b0251434c36b.aspx

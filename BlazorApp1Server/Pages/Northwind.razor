@@ -1,0 +1,38 @@
+﻿@page "/nw"
+@using GrpcService1;
+@using Grpc.Net.Client;
+
+<h3>Northwind</h3>
+@if (customers != null)
+{
+    @foreach (var item in customers.Items)
+    {
+        <span>@item.CompanyName</span>
+
+    }
+}
+
+<button @onclick="lade">lade</button>
+
+@code {
+    public Customers customers { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+
+
+
+    }
+    public async void lade()
+    {
+
+        var channel = GrpcChannel.ForAddress
+  ("https://localhost:5001");
+
+
+        var client = new NorthwindDB.NorthwindDBClient(channel); //GrpcServices="Client"
+
+     var    customers = await client.SelectAllAsync(new Empty());
+        StateHasChanged();
+    }
+
+}
