@@ -1,6 +1,7 @@
 ﻿@page "/nw"
 @using GrpcService1;
 @using Grpc.Net.Client;
+@using Grpc.Net.Client.Web;
 
 <h3>Northwind</h3>
 @if (customers != null)
@@ -25,12 +26,19 @@
     public async void lade()
     {
 
-        var channel = GrpcChannel.ForAddress
-  ("https://localhost:5001");
+        //var channel = GrpcChannel.ForAddress("https://localhost:5001");
+        //var client = new NorthwindDB.NorthwindDBClient(channel); //GrpcServices="Client"
+        //customers = await client.SelectAllAsync(new Empty());
+        //StateHasChanged();
 
+        //https://docs.microsoft.com/en-us/aspnet/core/grpc/browser?view=aspnetcore-3.1
+        var handler = new GrpcWebHandler(GrpcWebMode.GrpcWebText, new HttpClientHandler());
+        var channel = GrpcChannel.ForAddress("https://localhost:5001", new GrpcChannelOptions
+        {
+            HttpClient = new HttpClient(handler)
+        });
 
-        var client = new NorthwindDB.NorthwindDBClient(channel); //GrpcServices="Client"
-
+        var client = new NorthwindDB.NorthwindDBClient(channel);
         customers = await client.SelectAllAsync(new Empty());
         StateHasChanged();
     }

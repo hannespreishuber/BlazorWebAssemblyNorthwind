@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GrpcService1.Models;
+using GrpcService1.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -50,12 +51,15 @@ options.UseSqlServer(Configuration.GetConnectionString("Northwind")));
             }
 
             app.UseRouting();
+            app.UseGrpcWeb();
+
             app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<GreeterService>();
-                endpoints.MapGrpcService<Services.NorthwindDBService>().RequireCors("AllowAll"); //Status(StatusCode=Unimplemented, Detail="Service is unimplemented.")
+                endpoints.MapGrpcService<NorthwindDBService>().RequireCors("AllowAll").EnableGrpcWeb(); //Status(StatusCode=Unimplemented, Detail="Service is unimplemented.")
+             
                 endpoints.MapGet("/", async context =>
                 {
                     await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
